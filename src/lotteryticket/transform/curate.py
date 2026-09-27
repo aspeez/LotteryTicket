@@ -6,6 +6,13 @@ it just replaces the current snapshot of "what we know right now". There's no
 time-series data to append (no odds/lines being tracked over time — see
 docs/LOTTERY_TICKET_PLAYBOOK.md for why this pipeline is ESPN-only).
 
+`games` is the one table built from *every* raw scoreboard snapshot ever
+written, not just the latest — ESPN's scoreboard endpoint only returns the
+current week, so a game would otherwise disappear from `games` (and its box
+score would become permanently unreachable) the moment the next week starts.
+Snapshots are merged oldest-first so a newer snapshot of the same game_id
+(e.g. SCHEDULED -> FINAL) always overwrites the older one.
+
 Run via: python -m lotteryticket.transform.curate
 """
 from __future__ import annotations
@@ -58,6 +65,18 @@ def _parse_games(league: str, scoreboard: dict[str, Any]) -> list[dict[str, Any]
             }
         )
     return games
+
+
+def _accumulate_games(league: str, scoreboards: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Merge every raw scoreboard snapshot (oldest first) into one deduplicated,
+    chronologically sorted games list. A later snapshot of the same game_id always
+    wins — see the module docstring for why this needs to span every snapshot ever
+    pulled, not just the latest."""
+    games_by_id: dict[str, dict[str, Any]] = {}
+    for scoreboard in scoreboards:
+        for g in _parse_games(league, scoreboard):
+            games_by_id[g["game_id"]] = g
+    return sorted(games_by_id.values(), key=lambda g: g.get("commence_time") or "")
 
 
 def _parse_injuries(league: str, injuries_payload: dict[str, Any]) -> list[dict[str, Any]]:
@@ -143,13 +162,12 @@ def run(league_key: str | None = None) -> dict:
     for league in leagues:
         key = league["key"]
 
-        scoreboard_path = latest_raw_json("espn_scoreboard", key)
-        if scoreboard_path is None:
+        scoreboard_paths = list_raw_json("espn_scoreboard", key)
+        if not scoreboard_paths:
             print(f"[WARN] No ESPN scoreboard raw data for {key} yet, skipping")
             continue
 
-        scoreboard = read_raw_json(scoreboard_path)
-        games = _parse_games(key, scoreboard)
+        games = _accumulate_games(key, [read_raw_json(sp) for sp in scoreboard_paths])
 
         injuries_path_raw = latest_raw_json("espn_injuries", key)
         injuries_rows = _parse_injuries(key, read_raw_json(injuries_path_raw)) if injuries_path_raw else []

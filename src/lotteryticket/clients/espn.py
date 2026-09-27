@@ -49,6 +49,13 @@ class ESPNClient:
         params = {"dates": date} if date else None
         return self._get(url, params=params)
 
+    def get_scoreboard_week(
+        self, espn_path: str, season: int, week: int, seasontype: int = 2
+    ) -> dict[str, Any] | None:
+        """Scoreboard for a specific season/week. seasontype: 1=pre, 2=regular, 3=post."""
+        url = f"{ESPN_BASE_URL}/{espn_path}/scoreboard"
+        return self._get(url, params={"dates": season, "seasontype": seasontype, "week": week})
+
     def get_teams(self, espn_path: str) -> dict[str, Any] | None:
         url = f"{ESPN_BASE_URL}/{espn_path}/teams"
         return self._get(url)
