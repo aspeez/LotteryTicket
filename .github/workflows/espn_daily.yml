@@ -1,0 +1,89 @@
+name: ESPN Daily
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 10 * * *"
+
+concurrency:
+  group: lottery-ticket-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch ESPN scoreboard + injuries
+        env:
+          PYTHONPATH: src
+        run: python -m lotteryticket.ingest.espn_daily
+
+      - name: Curate raw data into Parquet
+        env:
+          PYTHONPATH: src
+        run: python -m lotteryticket.transform.curate
+
+      - name: Fetch player box scores for finished games
+        env:
+          PYTHONPATH: src
+        run: python -m lotteryticket.ingest.player_box_scores
+
+      - name: Re-curate to fold in player game stats
+        env:
+          PYTHONPATH: src
+        run: python -m lotteryticket.transform.curate
+
+      - name: Commit data changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/raw data/curated
+          git diff --cached --quiet || git commit -m "chore: ESPN daily refresh $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
+
+      - name: Ensure game-review label exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "game-review" \
+            --description "Daily Lottery Ticket Phase 2 trigger" \
+            --color "0075ca" \
+            2>/dev/null || true
+
+      - name: Create Phase 2 trigger issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DISPLAY_DATE=$(date -u +"%B %d, %Y")
+          gh issue create \
+            --title "Lottery Ticket — Data Refreshed [$DISPLAY_DATE]" \
+            --label "game-review" \
+            --body "## Today's data is in. Ready for a Claude review.
+
+          **Date:** $DISPLAY_DATE
+
+          ### What's in \`data/curated/\` now
+          - \`games/league=nfl/\` — this week's games, team names, ESPN status/scores
+          - \`player_game_stats/league=nfl/\` — per-player box score stats for every finished game this season
+          - \`injuries/league=nfl/\` — current injury report
+
+          ### To review
+          Open the **Lottery Ticket** project in Claude.ai (or Claude Code in this repo) and ask for the lottery ticket for a given date. Claude follows [docs/LOTTERY_TICKET_PLAYBOOK.md](../../docs/LOTTERY_TICKET_PLAYBOOK.md) to turn this into up to 20 ranked picks with reasoning.
+
+          Close this issue once you've reviewed."

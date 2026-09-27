@@ -1,0 +1,6 @@
+active:
+  - key: nfl
+    espn_path: football/nfl
+  # enable when ready:
+  # - key: nba
+  #   espn_path: basketball/nba

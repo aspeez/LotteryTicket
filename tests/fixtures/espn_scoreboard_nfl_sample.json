@@ -1,0 +1,30 @@
+{
+  "events": [
+    {
+      "id": "401671789",
+      "date": "2026-09-28T17:00Z",
+      "season": {"year": 2026, "type": 2},
+      "week": {"number": 4},
+      "competitions": [
+        {
+          "id": "401671789",
+          "neutralSite": false,
+          "venue": {"fullName": "Lambeau Field"},
+          "status": {"type": {"name": "STATUS_SCHEDULED"}},
+          "competitors": [
+            {
+              "homeAway": "home",
+              "score": "0",
+              "team": {"id": "9", "displayName": "Green Bay Packers", "abbreviation": "GB"}
+            },
+            {
+              "homeAway": "away",
+              "score": "0",
+              "team": {"id": "6", "displayName": "Dallas Cowboys", "abbreviation": "DAL"}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-09-26T00:39Z",
+  "status": "success",
+  "season": {"year": 2026},
+  "injuries": [
+    {
+      "id": "22",
+      "displayName": "Arizona Cardinals",
+      "injuries": [
+        {
+          "id": "639237",
+          "shortComment": "Lopez (groin) is listed as questionable for Sunday's game.",
+          "status": "Questionable",
+          "date": "2026-09-26T00:39Z",
+          "athlete": {
+            "displayName": "Roy Lopez",
+            "position": {"abbreviation": "DT"}
+          },
+          "type": {"abbreviation": "Q"},
+          "details": {"type": "Groin", "returnDate": "2026-09-27"}
+        }
+      ]
+    }
+  ]
+}

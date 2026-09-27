@@ -1,0 +1,212 @@
+{
+  "boxscore": {
+    "players": [
+      {
+        "team": {
+          "id": "1",
+          "uid": "s:20~l:28~t:1",
+          "slug": "atlanta-falcons",
+          "location": "Atlanta",
+          "name": "Falcons",
+          "abbreviation": "ATL",
+          "displayName": "Atlanta Falcons",
+          "shortDisplayName": "Falcons",
+          "color": "a71930",
+          "alternateColor": "000000",
+          "logo": "https://a.espncdn.com/i/teamlogos/nfl/500/atl.png"
+        },
+        "statistics": [
+          {
+            "name": "passing",
+            "keys": [
+              "completions/passingAttempts",
+              "passingYards",
+              "yardsPerPassAttempt",
+              "passingTouchdowns",
+              "interceptions",
+              "sacks-sackYardsLost",
+              "adjQBR",
+              "QBRating"
+            ],
+            "text": "Atlanta Passing",
+            "labels": [
+              "C/ATT",
+              "YDS",
+              "AVG",
+              "TD",
+              "INT",
+              "SACKS",
+              "QBR",
+              "RTG"
+            ],
+            "descriptions": [
+              "Completions/Attempts",
+              "Yards",
+              "Yards Per Pass Attempt",
+              "Touchdowns",
+              "Interceptions",
+              "Sacks",
+              "Adjusted QBR",
+              "Passer Rating"
+            ],
+            "athletes": [
+              {
+                "athlete": {
+                  "id": "4360423",
+                  "displayName": "Michael Penix Jr."
+                },
+                "stats": [
+                  "18/25",
+                  "256",
+                  "10.2",
+                  "1",
+                  "1",
+                  "0-0",
+                  "84.5",
+                  "101.4"
+                ]
+              }
+            ],
+            "totals": [
+              "18/25",
+              "256",
+              "10.2",
+              "1",
+              "1",
+              "0-0",
+              "--",
+              "101.4"
+            ]
+          },
+          {
+            "name": "rushing",
+            "keys": [
+              "rushingAttempts",
+              "rushingYards",
+              "yardsPerRushAttempt",
+              "rushingTouchdowns",
+              "longRushing"
+            ],
+            "text": "Atlanta Rushing",
+            "labels": [
+              "CAR",
+              "YDS",
+              "AVG",
+              "TD",
+              "LONG"
+            ],
+            "descriptions": [
+              "Rushing Attempts",
+              "Yards",
+              "Yards Per Rushing Attempt",
+              "Touchdowns",
+              "Longest Run"
+            ],
+            "athletes": [
+              {
+                "athlete": {
+                  "id": "4430807",
+                  "displayName": "Bijan Robinson"
+                },
+                "stats": [
+                  "29",
+                  "194",
+                  "6.7",
+                  "2",
+                  "55"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4241474",
+                  "displayName": "Brian Robinson Jr."
+                },
+                "stats": [
+                  "10",
+                  "50",
+                  "5.0",
+                  "1",
+                  "16"
+                ]
+              }
+            ],
+            "totals": [
+              "41",
+              "242",
+              "5.9",
+              "3",
+              "55"
+            ]
+          },
+          {
+            "name": "receiving",
+            "keys": [
+              "receptions",
+              "receivingYards",
+              "yardsPerReception",
+              "receivingTouchdowns",
+              "longReception",
+              "receivingTargets"
+            ],
+            "text": "Atlanta Receiving",
+            "labels": [
+              "REC",
+              "YDS",
+              "AVG",
+              "TD",
+              "LONG",
+              "TGTS"
+            ],
+            "descriptions": [
+              "Receptions",
+              "Yards",
+              "Yards Per Reception",
+              "Touchdowns",
+              "Longest Reception",
+              "Receiving Targets"
+            ],
+            "athletes": [
+              {
+                "athlete": {
+                  "id": "4426502",
+                  "displayName": "Drake London"
+                },
+                "stats": [
+                  "9",
+                  "194",
+                  "21.6",
+                  "0",
+                  "68",
+                  "10"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4430807",
+                  "displayName": "Bijan Robinson"
+                },
+                "stats": [
+                  "2",
+                  "19",
+                  "9.5",
+                  "0",
+                  "17",
+                  "2"
+                ]
+              }
+            ],
+            "totals": [
+              "18",
+              "256",
+              "14.2",
+              "1",
+              "68",
+              "23"
+            ]
+          }
+        ],
+        "displayOrder": 1
+      }
+    ]
+  }
+}
