@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub Issues](https://img.shields.io/github/issues/aspeez/LotteryTicket.svg)](https://github.com/aspeez/LotteryTicket/issues)
 
-Automated NFL data collection platform. Pulls games, per-player box-score stats, and injury reports from ESPN's public API, curates them into clean Parquet tables, and hands them to Claude to turn into a ranked list of sports picks.
+Automated NFL + NBA data collection platform. Pulls games, per-player box-score stats, and injury reports from ESPN's public API, curates them into clean Parquet tables, and hands them to Claude to turn into a ranked list of sports picks.
 
 **No betting odds are collected here, on purpose.** This isn't an odds-value/EV project — it's a sports-data pipeline. You check the actual FanDuel line yourself; Claude's job is to make sure the underlying performance data (recent form, matchups, injuries) is good enough to reason from.
 

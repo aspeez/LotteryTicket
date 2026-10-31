@@ -1,0 +1,59 @@
+{
+  "_note": "Hand-built to ESPN's basketball/nba scoreboard shape (trimmed); replace with a captured response when convenient.",
+  "leagues": [
+    {
+      "id": "46",
+      "abbreviation": "NBA"
+    }
+  ],
+  "day": {
+    "date": "2026-10-30"
+  },
+  "events": [
+    {
+      "id": "401810123",
+      "date": "2026-10-31T02:30Z",
+      "name": "Denver Nuggets at Los Angeles Lakers",
+      "season": {
+        "year": 2027,
+        "type": 2,
+        "slug": "regular-season"
+      },
+      "competitions": [
+        {
+          "id": "401810123",
+          "neutralSite": false,
+          "venue": {
+            "fullName": "Crypto.com Arena"
+          },
+          "status": {
+            "type": {
+              "name": "STATUS_FINAL",
+              "completed": true
+            }
+          },
+          "competitors": [
+            {
+              "homeAway": "home",
+              "score": "112",
+              "team": {
+                "id": "13",
+                "abbreviation": "LAL",
+                "displayName": "Los Angeles Lakers"
+              }
+            },
+            {
+              "homeAway": "away",
+              "score": "118",
+              "team": {
+                "id": "7",
+                "abbreviation": "DEN",
+                "displayName": "Denver Nuggets"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

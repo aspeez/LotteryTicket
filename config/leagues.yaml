@@ -1,6 +1,16 @@
 active:
+  # NFL: ESPN's default scoreboard returns the whole current week, so one
+  # undated call per day is enough (past weeks: ingest/backfill_scoreboards.py).
   - key: nfl
     espn_path: football/nfl
-  # enable when ready:
-  # - key: nba
-  #   espn_path: basketball/nba
+    scoreboard_mode: weekly
+
+  # NBA: ESPN's default scoreboard is a single *day*, so an undated pull would
+  # never see last night's late games go FINAL. `daily` mode instead pulls
+  # yesterday/today/tomorrow by explicit date, and also catches up any date since
+  # `season_start` that hasn't been pulled after it ended (so the first run
+  # backfills the season so far, and a missed workflow day heals itself).
+  - key: nba
+    espn_path: basketball/nba
+    scoreboard_mode: daily
+    season_start: "2026-10-20"

@@ -5,14 +5,14 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "lottery-ticket"
 version = "1.0.0"
-description = "Automated NFL sports data collection platform for Claude-assisted picks"
+description = "Automated NFL + NBA sports data collection platform for Claude-assisted picks"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
     {name = "aspeez", email = ""}
 ]
-keywords = ["sports-betting", "nfl", "espn", "sports-data"]
+keywords = ["sports-betting", "nfl", "nba", "espn", "sports-data"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Other Audience",

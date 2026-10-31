@@ -19,13 +19,31 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 
 from lotteryticket.util.io import curated_path, latest_raw_json, list_raw_json, load_yaml, read_raw_json
 from lotteryticket.util.time import utc_now
+
+
+# US sports schedules are set in Eastern time; a 10pm ET tip-off (or a Monday Night
+# Football kickoff) is already "tomorrow" in UTC, so slate-by-date uses this instead.
+SCHEDULE_TZ = ZoneInfo("America/New_York")
+
+
+def _local_game_date(commence_time: str | None) -> str | None:
+    """ESPN's ISO UTC timestamp ('2026-10-30T00:15Z') -> Eastern date ('2026-10-29')."""
+    if not commence_time:
+        return None
+    try:
+        dt = datetime.fromisoformat(commence_time.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return dt.astimezone(SCHEDULE_TZ).date().isoformat()
 
 
 def _parse_games(league: str, scoreboard: dict[str, Any]) -> list[dict[str, Any]]:
@@ -51,8 +69,12 @@ def _parse_games(league: str, scoreboard: dict[str, Any]) -> list[dict[str, Any]
                 "game_id": event.get("id"),
                 "league": league,
                 "season": (event.get("season") or {}).get("year"),
+                # 1=preseason, 2=regular, 3=postseason, 5=NBA play-in (ESPN's codes)
+                "season_type": (event.get("season") or {}).get("type"),
+                # NFL only; null for day-scheduled leagues like the NBA
                 "week": (event.get("week") or {}).get("number"),
                 "commence_time": event.get("date"),
+                "game_date": _local_game_date(event.get("date")),
                 "home_team_id": (home.get("team") or {}).get("id"),
                 "home_team_name": (home.get("team") or {}).get("displayName"),
                 "away_team_id": (away.get("team") or {}).get("id"),
@@ -106,38 +128,78 @@ def _parse_injuries(league: str, injuries_payload: dict[str, Any]) -> list[dict[
     return rows
 
 
+def _to_float(value: Any) -> float | None:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _split_compound(key: str, value: Any) -> list[tuple[str, float]]:
+    """ESPN packs made/attempted pairs into one cell: NBA
+    'threePointFieldGoalsMade-threePointFieldGoalsAttempted' = '3-8', NFL
+    'completions/passingAttempts' = '18/25'. Return each half as its own numeric
+    stat so 'made 3+ threes' is queryable; [] if it isn't a clean pair."""
+    for sep in ("-", "/"):
+        if sep not in key or not isinstance(value, str):
+            continue
+        key_parts = key.split(sep)
+        value_parts = value.split(sep)
+        if len(key_parts) != 2 or len(value_parts) != 2 or not all(key_parts):
+            continue
+        nums = [_to_float(v) for v in value_parts]
+        if any(n is None for n in nums):
+            continue
+        return list(zip(key_parts, nums))  # type: ignore[arg-type]
+    return []
+
+
 def _parse_player_game_stats(league: str, game_id: str, summary: dict[str, Any]) -> list[dict[str, Any]]:
+    """Works for both leagues' box-score shapes: NFL splits stats into named
+    categories (passing/rushing/receiving/...); the NBA has one unnamed block of
+    per-player stats, curated as stat_category='boxscore'. Players who didn't play
+    (NBA DNPs) come back with an empty stats list and produce no rows."""
     rows: list[dict[str, Any]] = []
     boxscore = summary.get("boxscore", {})
     for team_block in boxscore.get("players", []):
         team_id = (team_block.get("team") or {}).get("id")
         for stat_category in team_block.get("statistics", []):
-            category = stat_category.get("name")
+            category = stat_category.get("name") or "boxscore"
             keys = stat_category.get("keys", [])
-            labels = stat_category.get("labels", keys)
+            labels = stat_category.get("labels") or keys
             for athlete_entry in stat_category.get("athletes", []):
                 athlete = athlete_entry.get("athlete", {})
-                values = athlete_entry.get("stats", [])
-                for key, label, value in zip(keys, labels, values):
-                    numeric: float | None
-                    try:
-                        numeric = float(value)
-                    except (TypeError, ValueError):
-                        numeric = None
+                base = {
+                    "game_id": game_id,
+                    "league": league,
+                    "team_id": team_id,
+                    "athlete_id": athlete.get("id"),
+                    "athlete_name": athlete.get("displayName"),
+                    # Present in NBA box scores; null for NFL, which doesn't send them
+                    "position": (athlete.get("position") or {}).get("abbreviation"),
+                    "starter": athlete_entry.get("starter"),
+                    "stat_category": category,
+                }
+                for key, label, value in zip(keys, labels, athlete_entry.get("stats", [])):
                     rows.append(
                         {
-                            "game_id": game_id,
-                            "league": league,
-                            "team_id": team_id,
-                            "athlete_id": athlete.get("id"),
-                            "athlete_name": athlete.get("displayName"),
-                            "stat_category": category,
+                            **base,
                             "stat_name": key,
                             "stat_label": label,
                             "stat_value": value,
-                            "stat_value_numeric": numeric,
+                            "stat_value_numeric": _to_float(value),
                         }
                     )
+                    for part_key, part_value in _split_compound(key, value):
+                        rows.append(
+                            {
+                                **base,
+                                "stat_name": part_key,
+                                "stat_label": f"{label} ({part_key})",
+                                "stat_value": value,
+                                "stat_value_numeric": part_value,
+                            }
+                        )
     return rows
 
 
