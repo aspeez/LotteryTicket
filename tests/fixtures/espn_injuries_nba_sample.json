@@ -1,0 +1,29 @@
+{
+  "_note": "Hand-built to ESPN's basketball/nba injuries shape (trimmed).",
+  "injuries": [
+    {
+      "id": "13",
+      "displayName": "Los Angeles Lakers",
+      "injuries": [
+        {
+          "status": "Out",
+          "date": "2026-10-30T18:00Z",
+          "shortComment": "Reaves (calf) is out Friday.",
+          "athlete": {
+            "displayName": "Austin Reaves",
+            "position": {
+              "abbreviation": "G"
+            }
+          },
+          "type": {
+            "abbreviation": "O"
+          },
+          "details": {
+            "type": "Calf",
+            "returnDate": "2026-11-05"
+          }
+        }
+      ]
+    }
+  ]
+}

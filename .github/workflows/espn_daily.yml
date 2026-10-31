@@ -79,9 +79,10 @@ jobs:
           **Date:** $DISPLAY_DATE
 
           ### What's in \`data/curated/\` now
-          - \`games/league=nfl/\` — this week's games, team names, ESPN status/scores
-          - \`player_game_stats/league=nfl/\` — per-player box score stats for every finished game this season
-          - \`injuries/league=nfl/\` — current injury report
+          For each league (\`league=nfl\`, \`league=nba\`):
+          - \`games/\` — schedule + results (NFL: this week and earlier; NBA: season to date through tomorrow), team names, ESPN status/scores
+          - \`player_game_stats/\` — per-player box score stats for every finished game this season
+          - \`injuries/\` — current injury report
 
           ### To review
           Open the **Lottery Ticket** project in Claude.ai (or Claude Code in this repo) and ask for the lottery ticket for a given date. Claude follows [docs/LOTTERY_TICKET_PLAYBOOK.md](../../docs/LOTTERY_TICKET_PLAYBOOK.md) to turn this into up to 20 ranked picks with reasoning.

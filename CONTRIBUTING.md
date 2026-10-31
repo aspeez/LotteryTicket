@@ -5,11 +5,18 @@
 Add an entry to `active` in [config/leagues.yaml](config/leagues.yaml):
 
 ```yaml
-- key: nba
-  espn_path: basketball/nba   # site.api.espn.com/apis/site/v2/sports/{espn_path}/scoreboard
+- key: nhl
+  espn_path: hockey/nhl       # site.api.espn.com/apis/site/v2/sports/{espn_path}/scoreboard
+  scoreboard_mode: daily
+  season_start: "2026-10-06"
 ```
 
-That's it — `espn_daily`, `player_box_scores`, and `curate` all loop over `config/leagues.yaml`'s active list. No code changes needed.
+Set `scoreboard_mode` to match how ESPN schedules the sport:
+
+- `weekly` — ESPN's undated scoreboard returns the whole current week (NFL). Past weeks are pulled with `ingest/backfill_scoreboards.py`.
+- `daily` — ESPN's undated scoreboard is a single day (NBA, and likely NHL/MLB). Also set `season_start: "YYYY-MM-DD"`; `espn_daily` then pulls yesterday/today/tomorrow by date every run and backfills any earlier date in the season automatically. Bump `season_start` each new season.
+
+That's it — `espn_daily`, `player_box_scores`, and `curate` all loop over `config/leagues.yaml`'s active list. A new sport's box-score shape may differ, though (the NBA's has no stat-category names, for example), so add fixtures for its scoreboard/summary/injuries in `tests/fixtures/` and a test like `tests/test_nba.py` before trusting the curated output. Then add a section for the sport to [docs/LOTTERY_TICKET_PLAYBOOK.md](docs/LOTTERY_TICKET_PLAYBOOK.md).
 
 ## Adding a stat category or fixing a parser
 

@@ -1,6 +1,6 @@
 # LotteryTicket
 
-This pipeline collects NFL sports data (games, player box-score stats, injuries) from ESPN's public API. **There is no betting-odds collection in this repo, on purpose** — no Odds API, no FanDuel/Pinnacle lines, no player props, no scoring engine. The user checks actual sportsbook odds themselves; this project's job is to make sure the underlying sports data (recent form, matchups, injuries) is solid enough for Claude to reason from.
+This pipeline collects NFL and NBA sports data (games, player box-score stats, injuries) from ESPN's public API. **There is no betting-odds collection in this repo, on purpose** — no Odds API, no FanDuel/Pinnacle lines, no player props, no scoring engine. The user checks actual sportsbook odds themselves; this project's job is to make sure the underlying sports data (recent form, matchups, injuries) is solid enough for Claude to reason from.
 
 ## The actual goal
 
@@ -11,9 +11,11 @@ When the user asks "give me the lottery ticket for [date]" (or "sports picks for
 ## Current state
 
 - `src/lotteryticket/clients/espn.py` — ESPN's public scoreboard/injuries/summary endpoints. HTTP + retries only, no parsing.
-- `src/lotteryticket/ingest/` — `espn_daily.py` (scoreboard + injuries), `player_box_scores.py` (box scores for finished games, dedup'd by event id embedded in the raw filename so a full season isn't re-downloaded every day). Both just call the client and write raw responses immutably to `data/raw/{source}/{league}/{date}/{time}.json.gz`.
+- `src/lotteryticket/ingest/` — `espn_daily.py` (scoreboard + injuries; per-league weekly/daily scoreboard mode), `player_box_scores.py` (box scores for finished games, dedup'd by event id embedded in the raw filename so a full season isn't re-downloaded every day). Both just call the client and write raw responses immutably to `data/raw/{source}/{league}/{date}/{time}.json.gz`.
 - `src/lotteryticket/transform/curate.py` — raw JSON → curated Parquet in `data/curated/{table}/league={x}/`. Every table (`games`, `player_game_stats`, `injuries`) is a **STATE table**: rebuilt fully from all raw data on every run, written to a fixed filename. Re-running never duplicates rows — it just replaces "what we know right now". (There used to be a second, snapshot/append write pattern for odds line-history; it's gone along with the odds collection it existed for. If you ever see snapshot-pattern code again, it doesn't belong here.)
-- `config/leagues.yaml` — active leagues and their ESPN path. NFL only right now; adding a league is a config-only change (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+- `config/leagues.yaml` — active leagues (NFL, NBA), their ESPN path, and `scoreboard_mode`. NFL is `weekly` (ESPN's undated scoreboard = the whole week); NBA is `daily` (undated scoreboard = one day, so `espn_daily` pulls yesterday/today/tomorrow by date and auto-backfills any date since `season_start` that wasn't pulled after it ended). Adding a league is a config-only change (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+- Slate-by-date uses `games.game_date` (US Eastern), **not** the UTC `commence_time` — late NBA tips and NFL prime-time kickoffs are already the next day in UTC.
+- `player_game_stats` handles both box-score shapes: NFL's named categories (`passing`/`rushing`/...) and the NBA's single unnamed block (curated as `stat_category = 'boxscore'`, with `position`/`starter` populated). Made-attempted cells (`"4-10"`, `"18/25"`) also get split into their own numeric stat rows (`threePointFieldGoalsMade`, `completions`, ...).
 - `.github/workflows/espn_daily.yml` — the one workflow: fetch scoreboard/injuries → curate → fetch box scores for newly-finished games → curate again → commit → open a "data refreshed, ready for review" issue.
 - Team identity is ESPN's own team id throughout (`games.home_team_id`/`away_team_id`, `player_game_stats.team_id`, `injuries.team_id`) — there's no cross-source team-name matching to worry about, since there's only one source now.
 

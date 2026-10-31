@@ -1,4 +1,6 @@
 """One-off / on-demand backfill of past-week ESPN scoreboards into raw storage.
+Week-scheduled leagues (NFL) only — `daily`-mode leagues (NBA) backfill
+automatically in espn_daily from `season_start`.
 Run via:
 python -m lotteryticket.ingest.backfill_scoreboards --season 2026 --weeks 1-2
 Then: curate -> player_box_scores -> curate.
@@ -28,6 +30,11 @@ def _parse_weeks(spec: str) -> list[int]:
 def run(season: int, weeks: list[int], seasontype: int = 2, league_key: str = "nfl") -> dict:
     config = load_yaml("leagues.yaml")
     league = next(l for l in config["active"] if l["key"] == league_key)
+    if league.get("scoreboard_mode", "weekly") != "weekly":
+        raise SystemExit(
+            f"{league_key} uses scoreboard_mode={league['scoreboard_mode']!r}; it backfills "
+            "itself from season_start on every espn_daily run — no manual backfill needed."
+        )
     espn_path = league["espn_path"]
 
     client = ESPNClient()

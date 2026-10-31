@@ -1,0 +1,242 @@
+{
+  "_note": "Hand-built to ESPN's basketball/nba summary boxscore shape (trimmed); replace with a captured response when convenient.",
+  "boxscore": {
+    "players": [
+      {
+        "team": {
+          "id": "7",
+          "displayName": "Denver Nuggets"
+        },
+        "statistics": [
+          {
+            "names": [
+              "MIN",
+              "FG",
+              "3PT",
+              "FT",
+              "OREB",
+              "DREB",
+              "REB",
+              "AST",
+              "STL",
+              "BLK",
+              "TO",
+              "PF",
+              "+/-",
+              "PTS"
+            ],
+            "keys": [
+              "minutes",
+              "fieldGoalsMade-fieldGoalsAttempted",
+              "threePointFieldGoalsMade-threePointFieldGoalsAttempted",
+              "freeThrowsMade-freeThrowsAttempted",
+              "offensiveRebounds",
+              "defensiveRebounds",
+              "rebounds",
+              "assists",
+              "steals",
+              "blocks",
+              "turnovers",
+              "fouls",
+              "plusMinus",
+              "points"
+            ],
+            "labels": [
+              "MIN",
+              "FG",
+              "3PT",
+              "FT",
+              "OREB",
+              "DREB",
+              "REB",
+              "AST",
+              "STL",
+              "BLK",
+              "TO",
+              "PF",
+              "+/-",
+              "PTS"
+            ],
+            "athletes": [
+              {
+                "active": true,
+                "athlete": {
+                  "id": "3112335",
+                  "displayName": "Nikola Jokic",
+                  "shortName": "Nikola Jokic",
+                  "position": {
+                    "name": "",
+                    "abbreviation": "C"
+                  }
+                },
+                "starter": true,
+                "didNotPlay": false,
+                "reason": "",
+                "ejected": false,
+                "stats": [
+                  "37",
+                  "12-19",
+                  "2-4",
+                  "6-7",
+                  "3",
+                  "11",
+                  "14",
+                  "11",
+                  "2",
+                  "1",
+                  "4",
+                  "2",
+                  "+9",
+                  "32"
+                ]
+              },
+              {
+                "active": true,
+                "athlete": {
+                  "id": "3936299",
+                  "displayName": "Jamal Murray",
+                  "shortName": "Jamal Murray",
+                  "position": {
+                    "name": "",
+                    "abbreviation": "G"
+                  }
+                },
+                "starter": true,
+                "didNotPlay": false,
+                "reason": "",
+                "ejected": false,
+                "stats": [
+                  "35",
+                  "9-21",
+                  "4-10",
+                  "2-2",
+                  "0",
+                  "3",
+                  "3",
+                  "6",
+                  "1",
+                  "0",
+                  "2",
+                  "3",
+                  "+4",
+                  "24"
+                ]
+              },
+              {
+                "active": true,
+                "athlete": {
+                  "id": "4900000",
+                  "displayName": "Bench Guy",
+                  "shortName": "Bench Guy",
+                  "position": {
+                    "name": "",
+                    "abbreviation": "G"
+                  }
+                },
+                "starter": false,
+                "didNotPlay": true,
+                "reason": "COACH'S DECISION",
+                "ejected": false,
+                "stats": []
+              }
+            ],
+            "totals": []
+          }
+        ]
+      },
+      {
+        "team": {
+          "id": "13",
+          "displayName": "Los Angeles Lakers"
+        },
+        "statistics": [
+          {
+            "names": [
+              "MIN",
+              "FG",
+              "3PT",
+              "FT",
+              "OREB",
+              "DREB",
+              "REB",
+              "AST",
+              "STL",
+              "BLK",
+              "TO",
+              "PF",
+              "+/-",
+              "PTS"
+            ],
+            "keys": [
+              "minutes",
+              "fieldGoalsMade-fieldGoalsAttempted",
+              "threePointFieldGoalsMade-threePointFieldGoalsAttempted",
+              "freeThrowsMade-freeThrowsAttempted",
+              "offensiveRebounds",
+              "defensiveRebounds",
+              "rebounds",
+              "assists",
+              "steals",
+              "blocks",
+              "turnovers",
+              "fouls",
+              "plusMinus",
+              "points"
+            ],
+            "labels": [
+              "MIN",
+              "FG",
+              "3PT",
+              "FT",
+              "OREB",
+              "DREB",
+              "REB",
+              "AST",
+              "STL",
+              "BLK",
+              "TO",
+              "PF",
+              "+/-",
+              "PTS"
+            ],
+            "athletes": [
+              {
+                "active": true,
+                "athlete": {
+                  "id": "3945274",
+                  "displayName": "Luka Doncic",
+                  "shortName": "Luka Doncic",
+                  "position": {
+                    "name": "",
+                    "abbreviation": "G"
+                  }
+                },
+                "starter": true,
+                "didNotPlay": false,
+                "reason": "",
+                "ejected": false,
+                "stats": [
+                  "38",
+                  "11-24",
+                  "4-11",
+                  "8-9",
+                  "1",
+                  "8",
+                  "9",
+                  "10",
+                  "1",
+                  "0",
+                  "5",
+                  "2",
+                  "-6",
+                  "34"
+                ]
+              }
+            ],
+            "totals": []
+          }
+        ]
+      }
+    ]
+  }
+}
